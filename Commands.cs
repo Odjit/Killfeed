@@ -6,7 +6,6 @@ using ProjectM.Network;
 using VampireCommandFramework;
 
 namespace Killfeed;
-
 public class Commands
 {
 	[Command("killfeed leaderboard", shortHand: "kf top")]
@@ -20,37 +19,33 @@ public class Commands
 		offset = offset > topKillers.Length ? topKillers.Length : offset;
 		num = num > topKillers.Length ? topKillers.Length : num;
 
-
-
 		var pad = (string name) => new string('\t'.Repeat(6 - name.Length / 5).ToArray());
-
 
 		var sb = new StringBuilder();
 		var sb2 = new StringBuilder();
 
-		sb2.AppendLine("");
 		sb.AppendLine($"{Markup.Prefix} <size=18><u>Top Kills</u></size>");
 
-		//var message = (DataStore.PlayerStatistics k) => $"{Markup.Highlight(k.LastName)}{pad(k.LastName)}<color={Markup.SecondaryColor}><b>{k.Kills}</b> / {k.Deaths}</color>";
 		var message = (DataStore.PlayerStatistics k) => $"\t<color={Markup.SecondaryColor}><b>{k.Kills,-3}</b> / {k.Deaths,3}</color>\t{Markup.Highlight(k.LastName)}";
 
 		for (var i = 0; i < offset; i++)
 		{
 			var k = topKillers[i];
 			sb.AppendLine($"{i + 1}. {message(k)}");
-			//sb.AppendLine($"{i + 1}. {Markup.Highlight(k.LastName.PadRight(1, ' '))}{pad(k.LastName)}{Markup.Secondary(k.LastName.Length)}");
 		}
-
-
 
 		for (var i = offset; i < num; i++)
 		{
 			var k = topKillers[i];
 			sb2.AppendLine($"{i + 1}. {message(k)}");
-			//sb2.AppendLine($"{i + 1}. {Markup.Highlight(k.LastName.PadRight(1, ' '))}{pad(k.LastName)}{Markup.Secondary(k.LastName.Length)}");
 		}
+
 		ctx.Reply(sb.ToString());
-		ctx.Reply(sb2.ToString());
+
+		if (sb2.Length > 0)
+		{
+			ctx.Reply("\n" + sb2.ToString());
+		}
 	}
 
 	[Command("killfeed", shortHand: "kf", description: "Shows Killfeed info")]
